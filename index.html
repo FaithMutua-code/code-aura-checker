@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibe Checker - Code Analysis Tool</title>
+    <title>Vibe Checker Pro - Advanced Code Analysis Tool</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -15,6 +15,7 @@
             --success: #4caf50;
             --danger: #f44336;
             --warning: #ff9800;
+            --info: #2196f3;
             --vibe-purple: #7b1fa2;
             --vibe-pink: #e91e63;
             --vibe-gradient: linear-gradient(135deg, var(--vibe-purple) 0%, var(--vibe-pink) 100%);
@@ -34,11 +35,15 @@
             min-height: 100vh;
             padding: 2rem;
             color: var(--dark);
+            position: relative;
+            overflow-x: hidden;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
         
         header {
@@ -246,7 +251,7 @@
             gap: 1.5rem;
         }
         
-        .language-card, .library-card {
+        .language-card, .library-card, .metrics-card {
             background: var(--light);
             border-radius: 12px;
             padding: 1.25rem;
@@ -255,12 +260,16 @@
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
         }
         
-        .language-card:hover, .library-card:hover {
+        .metrics-card {
+            border-left-color: var(--info);
+        }
+        
+        .language-card:hover, .library-card:hover, .metrics-card:hover {
             transform: translateX(8px) scale(1.02);
             box-shadow: 0 6px 15px rgba(123, 31, 162, 0.15);
         }
         
-        .language-card h3, .library-card h3 {
+        .language-card h3, .library-card h3, .metrics-card h3 {
             display: flex;
             align-items: center;
             gap: 0.8rem;
@@ -269,7 +278,7 @@
             font-size: 1.3rem;
         }
         
-        .language-card p, .library-card p {
+        .language-card p, .library-card p, .metrics-card p {
             font-size: 1rem;
             color: #6c757d;
             margin-left: 1.8rem;
@@ -376,6 +385,67 @@
             color: var(--accent);
         }
         
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .metric {
+            background: white;
+            padding: 0.8rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        
+        .metric-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .history-panel {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 6px solid var(--warning);
+        }
+        
+        .history-item {
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .history-item small {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        
+        .history-item p {
+            margin: 0.5rem 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
         @media (max-width: 768px) {
             .app-container {
                 flex-direction: column;
@@ -393,6 +463,10 @@
                 width: 100%;
                 justify-content: center;
                 padding: 1rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         
@@ -540,7 +614,7 @@
             height: 200px;
             border-radius: 50%;
             background: radial-gradient(circle, rgba(233, 30, 99, 0.1) 0%, rgba(156, 39, 176, 0.1) 100%);
-            z-index: -1;
+            z-index: 0;
         }
         
         .theme-element-1 {
@@ -552,6 +626,34 @@
             bottom: 10%;
             right: 5%;
         }
+        
+        /* GitHub repo info */
+        .repo-info {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .repo-info h4 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+        
+        .repo-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .repo-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
@@ -560,8 +662,8 @@
     
     <div class="container">
         <header>
-            <h1><i class="fas fa-viruses"></i> Vibe Checker</h1>
-            <p>Scan your codebase to detect the technical vibes - languages, frameworks, and development patterns in your project. Get insights and suggestions to improve your stack.</p>
+            <h1><i class="fas fa-viruses"></i> Vibe Checker Pro</h1>
+            <p>Advanced code analysis tool to detect the technical vibes in your project. Get detailed insights and actionable suggestions to improve your code quality.</p>
         </header>
         
         <div class="app-container">
@@ -601,13 +703,23 @@
                     </button>
                 </div>
                 
-                <div class="tab-content" ID="repo-tab">
+                <div class="tab-content" id="repo-tab">
                     <div class="input-container">
                         <input type="text" id="repoUrl" class="input-field" placeholder="https://github.com/user/repo" style="width: 100%; padding: 1rem; border-radius: 12px; border: 2px solid rgba(156, 39, 176, 0.2); margin-bottom: 1.5rem; font-size: 1rem;">
                         
                         <div class="tooltip" style="margin-bottom: 1.5rem;">
                             <i class="fas fa-info-circle" style="color: var(--accent);"></i>
                             <span class="tooltiptext">Currently supports public GitHub repositories only. Private repo vibes coming soon!</span>
+                        </div>
+                        
+                        <div class="repo-info" id="repoInfo">
+                            <h4 id="repoName"></h4>
+                            <p id="repoDescription"></p>
+                            <div class="repo-stats">
+                                <div class="repo-stat"><i class="fas fa-star"></i> <span id="repoStars"></span></div>
+                                <div class="repo-stat"><i class="fas fa-code-branch"></i> <span id="repoForks"></span></div>
+                                <div class="repo-stat"><i class="fas fa-eye"></i> <span id="repoWatchers"></span></div>
+                            </div>
                         </div>
                     </div>
                     
@@ -640,92 +752,139 @@
                         <p>No code vibes detected yet. Paste, upload, or link your code to get started.</p>
                     </div>
                 </div>
+                
+                <div class="history-panel" id="historyPanel" style="display: none;">
+                    <h3><i class="fas fa-history"></i> Previous Analyses</h3>
+                    <div id="historyList"></div>
+                </div>
             </div>
         </div>
     </div>
     
     <script>
-        // Store language and library data
+        // Enhanced language and library data
         const languageData = {
-            'javascript': { keywords: ['function', 'const', 'let', 'var', '=>', 'console.log', 'import', 'export', 'require'], 
-                            extensions: ['js', 'jsx', 'mjs'] },
-            'python': { keywords: ['def ', 'import ', 'class ', 'print(', 'lambda ', 'try:', 'except ', 'with '], 
-                        extensions: ['py', 'pyw'] },
-            'java': { keywords: ['public ', 'class ', 'import ', 'void ', 'System.out.println', 'new ', 'extends '], 
-                    extensions: ['java'] },
-            'c': { keywords: ['#include', 'printf', 'scanf', 'int ', 'void ', 'char ', 'struct ', 'return '], 
-                extensions: ['c', 'h'] },
-            'c++': { keywords: ['#include', 'cout <<', 'cin >>', 'std::', 'using namespace', 'template<', 'class '], 
-                    extensions: ['cpp', 'hpp', 'hxx'] },
-            'c#': { keywords: ['using ', 'namespace ', 'class ', 'public ', 'void ', 'Console.WriteLine', 'var ', '=>'], 
-                    extensions: ['cs'] },
-            'php': { keywords: ['<?php', 'echo ', 'function ', 'class ', 'namespace ', 'use ', '$_GET', '$_POST'], 
-                    extensions: ['php'] },
-            'ruby': { keywords: ['def ', 'class ', 'require ', 'puts ', 'module ', 'do ', 'end', 'attr_'], 
-                    extensions: ['rb'] },
-            'go': { keywords: ['package ', 'import ', 'func ', 'var ', 'const ', 'type ', 'for ', 'if '], 
-                extensions: ['go'] },
-            'swift': { keywords: ['import ', 'func ', 'var ', 'let ', 'class ', 'struct ', 'enum ', 'extension '], 
-                    extensions: ['swift'] },
-            'rust': { keywords: ['fn ', 'let ', 'mut ', 'pub ', 'impl ', 'trait ', 'use ', 'match '], 
-                    extensions: ['rs'] },
-            'typescript': { keywords: ['type ', 'interface ', 'enum ', 'import ', 'export ', 'declare ', '=>', 'let ', 'const '], 
-                            extensions: ['ts', 'tsx'] },
-            'html': { keywords: ['<!DOCTYPE html>', '<html', '<head', '<body', '<div', '<span', '<a ', '<p '], 
-                    extensions: ['html', 'htm'] },
-            'css': { keywords: ['{', '}', ':', ';', '@media', '@keyframes', '@import', '@font-face'], 
-                    extensions: ['css', 'scss', 'sass', 'less'] },
-            'bash': { keywords: ['#!/bin/bash', '#!/bin/sh', 'echo ', 'if [', 'for ', 'while ', 'do ', 'done'], 
-                    extensions: ['sh'] },
-            'powershell': { keywords: ['#Requires', 'Write-Host', 'function ', 'param(', 'foreach ', 'if ', 'else '], 
-                            extensions: ['ps1'] },
-            'kotlin': { keywords: ['fun ', 'val ', 'var ', 'class ', 'import ', 'when ', 'object ', 'companion '], 
-                        extensions: ['kt'] },
-            'dart': { keywords: ['void ', 'main()', 'class ', 'import ', '=>', 'final ', 'const ', 'async ', 'Future<'], 
-                    extensions: ['dart'] },
-            'scala': { keywords: ['def ', 'val ', 'var ', 'class ', 'object ', 'trait ', 'extends ', 'with '], 
-                    extensions: ['scala'] }
+            'javascript': { 
+                keywords: ['function', 'const', 'let', 'var', '=>', 'console.log', 'import', 'export', 'require', 'async', 'await', 'try', 'catch'], 
+                extensions: ['js', 'jsx', 'mjs', 'cjs'] 
+            },
+            'python': { 
+                keywords: ['def ', 'import ', 'class ', 'print(', 'lambda ', 'try:', 'except ', 'with ', 'async', 'await', 'yield'], 
+                extensions: ['py', 'pyw', 'pyc'] 
+            },
+            'java': { 
+                keywords: ['public ', 'class ', 'import ', 'void ', 'System.out.println', 'new ', 'extends ', 'implements ', 'interface '], 
+                extensions: ['java'] 
+            },
+            'c': { 
+                keywords: ['#include', 'printf', 'scanf', 'int ', 'void ', 'char ', 'struct ', 'return ', 'typedef ', '#define'], 
+                extensions: ['c', 'h'] 
+            },
+            'c++': { 
+                keywords: ['#include', 'cout <<', 'cin >>', 'std::', 'using namespace', 'template<', 'class ', 'virtual ', 'override'], 
+                extensions: ['cpp', 'hpp', 'hxx', 'cxx'] 
+            },
+            'c#': { 
+                keywords: ['using ', 'namespace ', 'class ', 'public ', 'void ', 'Console.WriteLine', 'var ', '=>', 'async', 'await'], 
+                extensions: ['cs'] 
+            },
+            'php': { 
+                keywords: ['<?php', 'echo ', 'function ', 'class ', 'namespace ', 'use ', '$_GET', '$_POST', '->', '::'], 
+                extensions: ['php', 'phtml'] 
+            },
+            'ruby': { 
+                keywords: ['def ', 'class ', 'require ', 'puts ', 'module ', 'do ', 'end', 'attr_', 'yield'], 
+                extensions: ['rb'] 
+            },
+            'go': { 
+                keywords: ['package ', 'import ', 'func ', 'var ', 'const ', 'type ', 'for ', 'if ', 'struct ', 'interface '], 
+                extensions: ['go'] 
+            },
+            'swift': { 
+                keywords: ['import ', 'func ', 'var ', 'let ', 'class ', 'struct ', 'enum ', 'extension ', 'protocol '], 
+                extensions: ['swift'] 
+            },
+            'rust': { 
+                keywords: ['fn ', 'let ', 'mut ', 'pub ', 'impl ', 'trait ', 'use ', 'match ', 'mod ', 'unsafe '], 
+                extensions: ['rs'] 
+            },
+            'typescript': { 
+                keywords: ['type ', 'interface ', 'enum ', 'import ', 'export ', 'declare ', '=>', 'let ', 'const ', 'async', 'await'], 
+                extensions: ['ts', 'tsx'] 
+            },
+            'html': { 
+                keywords: ['<!DOCTYPE html>', '<html', '<head', '<body', '<div', '<span', '<a ', '<p ', '<script', '<style'], 
+                extensions: ['html', 'htm'] 
+            },
+            'css': { 
+                keywords: ['{', '}', ':', ';', '@media', '@keyframes', '@import', '@font-face', '#', '.', 'animation:'], 
+                extensions: ['css', 'scss', 'sass', 'less'] 
+            },
+            'bash': { 
+                keywords: ['#!/bin/bash', '#!/bin/sh', 'echo ', 'if [', 'for ', 'while ', 'do ', 'done', 'function '], 
+                extensions: ['sh', 'bash'] 
+            },
+            'powershell': { 
+                keywords: ['#Requires', 'Write-Host', 'function ', 'param(', 'foreach ', 'if ', 'else ', 'try ', 'catch '], 
+                extensions: ['ps1'] 
+            },
+            'kotlin': { 
+                keywords: ['fun ', 'val ', 'var ', 'class ', 'import ', 'when ', 'object ', 'companion ', 'data class '], 
+                extensions: ['kt', 'kts'] 
+            },
+            'dart': { 
+                keywords: ['void ', 'main()', 'class ', 'import ', '=>', 'final ', 'const ', 'async ', 'Future<', 'await '], 
+                extensions: ['dart'] 
+            },
+            'scala': { 
+                keywords: ['def ', 'val ', 'var ', 'class ', 'object ', 'trait ', 'extends ', 'with ', 'yield '], 
+                extensions: ['scala'] 
+            }
         };
         
         const libraryData = {
             'javascript': {
-                'React': ['ReactDOM', 'React.Component', 'useState', 'useEffect'],
-                'React Router': ['BrowserRouter', 'Route', 'Switch', 'Link', 'useHistory'],
+                'React': ['ReactDOM', 'React.Component', 'useState', 'useEffect', 'useRef', 'useContext'],
+                'React Router': ['BrowserRouter', 'Route', 'Switch', 'Link', 'useHistory', 'useParams'],
                 'jQuery': ['$', 'jQuery'],
-                'Vue.js': ['Vue', 'new Vue', 'v-model', 'v-for', 'v-if'],
-                'Angular': ['@NgModule', '@Component', '@Injectable', 'ngOnInit'],
-                'Express.js': ['express()', 'app.get', 'app.post', 'app.use', 'req.params'],
-                'Moment.js': ['moment(', 'moment().format', 'moment().add'],
-                'Lodash': ['_.', '_.map', '_.filter', '_.reduce'],
-                'Axios': ['axios.get', 'axios.post', 'axios.put', 'axios.delete'],
-                'Redux': ['createStore', 'combineReducers', 'useDispatch', 'useSelector'],
-                'Next.js': ['getServerSideProps', 'getStaticProps', 'useRouter', 'next/link'],
+                'Vue.js': ['Vue', 'new Vue', 'v-model', 'v-for', 'v-if', 'v-show', 'v-bind'],
+                'Angular': ['@NgModule', '@Component', '@Injectable', 'ngOnInit', 'ngAfterViewInit'],
+                'Express.js': ['express()', 'app.get', 'app.post', 'app.use', 'req.params', 'res.json'],
+                'Moment.js': ['moment(', 'moment().format', 'moment().add', 'moment().subtract'],
+                'Lodash': ['_.', '_.map', '_.filter', '_.reduce', '_.debounce', '_.throttle'],
+                'Axios': ['axios.get', 'axios.post', 'axios.put', 'axios.delete', 'axios.create'],
+                'Redux': ['createStore', 'combineReducers', 'useDispatch', 'useSelector', 'connect('],
+                'Next.js': ['getServerSideProps', 'getStaticProps', 'useRouter', 'next/link', 'next/image'],
                 'Three.js': ['THREE.', 'new THREE.Scene', 'new THREE.Mesh', 'new THREE.WebGLRenderer'],
-                'Trendy': ['useVibe()', 'setGoodVibes(true)', 'optimisticUI', 'web5.0', 'metaverseReady'], // Added some fun "vibe" libraries
+                'ESLint': ['eslint-disable', 'eslint-enable', 'eslint-ignore'],
+                'Prettier': ['prettier-ignore', '// prettier-ignore'],
+                'Jest': ['describe(', 'it(', 'expect(', 'jest.mock('],
                 'Vibe.js': ['createVibe()', 'goodVibesOnly', 'checkVibeLevel']
             },
             'python': {
                 'Django': ['from django.', 'django.db.models', 'HttpResponse', 'render(', 'urlpatterns'],
                 'Flask': ['Flask(', 'app.route(', 'flask.', 'request.', 'jsonify('],
-                'Pandas': ['pd.', 'pandas.', 'DataFrame', 'read_csv', 'Series'],
-                'NumPy': ['np.', 'numpy.', 'array(', 'linspace(', 'zeros('],
-                'Matplotlib': ['plt.', 'matplotlib.', 'plot(', 'figure(', 'subplot('],
-                'TensorFlow': ['tensorflow.', 'tf.', 'keras.', 'Dense', 'Sequential'],
-                'PyTorch': ['torch.', 'nn.', 'Tensor(', 'optim.', 'Dataset'],
-                'FastAPI': ['FastAPI(', 'app.get(', 'app.post(', 'from fastapi import'],
-                'Pytest': ['pytest.', 'with pytest.raises', 'fixture(', 'mark.'],
-                'Requests': ['requests.get', 'requests.post', 'response.json'],
-                'Vibes.py': ['good_vibes.check()', 'vibe_report.generate()'] // Added some fun "vibe" libraries
+                'Pandas': ['pd.', 'pandas.', 'DataFrame', 'read_csv', 'Series', 'groupby'],
+                'NumPy': ['np.', 'numpy.', 'array(', 'linspace(', 'zeros(', 'ones('],
+                'Matplotlib': ['plt.', 'matplotlib.', 'plot(', 'figure(', 'subplot(', 'show()'],
+                'TensorFlow': ['tensorflow.', 'tf.', 'keras.', 'Dense', 'Sequential', 'compile('],
+                'PyTorch': ['torch.', 'nn.', 'Tensor(', 'optim.', 'Dataset', 'DataLoader'],
+                'FastAPI': ['FastAPI(', 'app.get(', 'app.post(', 'from fastapi import', 'Depends'],
+                'Pytest': ['pytest.', 'with pytest.raises', 'fixture(', 'mark.', 'parametrize'],
+                'Requests': ['requests.get', 'requests.post', 'response.json', 'response.text'],
+                'Black': ['# fmt: off', '# fmt: on'],
+                'Pylint': ['# pylint: disable', '# pylint: enable'],
+                'Vibes.py': ['good_vibes.check()', 'vibe_report.generate()']
             },
             'java': {
-                'Spring Boot': ['@SpringBootApplication', '@RestController', '@Autowired', '@GetMapping'],
-                'JUnit': ['@Test', 'Assertions.', '@BeforeEach', '@AfterEach'],
-                'Mockito': ['@Mock', '@InjectMocks', 'Mockito.', 'when('],
-                'Hibernate': ['@Entity', '@Table', '@Column', 'SessionFactory'],
-                'Lombok': ['@Data', '@Getter', '@Setter', '@NoArgsConstructor'],
-                'Jackson': ['ObjectMapper', '@JsonIgnore', '@JsonProperty', 'JsonNode'],
+                'Spring Boot': ['@SpringBootApplication', '@RestController', '@Autowired', '@GetMapping', '@PostMapping'],
+                'JUnit': ['@Test', 'Assertions.', '@BeforeEach', '@AfterEach', '@DisplayName'],
+                'Mockito': ['@Mock', '@InjectMocks', 'Mockito.', 'when(', 'verify('],
+                'Hibernate': ['@Entity', '@Table', '@Column', 'SessionFactory', 'CriteriaBuilder'],
+                'Lombok': ['@Data', '@Getter', '@Setter', '@NoArgsConstructor', '@AllArgsConstructor'],
+                'Jackson': ['ObjectMapper', '@JsonIgnore', '@JsonProperty', 'JsonNode', 'ObjectReader'],
                 'Apache Commons': ['StringUtils.', 'FileUtils.', 'ArrayUtils.', 'CollectionUtils.'],
-                'JavaVibes': ['VibeCheck.run()', 'GoodVibesOnly.enable()'] // Added some fun "vibe" libraries
+                'JavaVibes': ['VibeCheck.run()', 'GoodVibesOnly.enable()']
             }
         };
         
@@ -734,12 +893,20 @@
         const codeFileEl = document.getElementById('codeFile');
         const fileNameEl = document.getElementById('fileName');
         const repoUrlEl = document.getElementById('repoUrl');
+        const repoInfoEl = document.getElementById('repoInfo');
+        const repoNameEl = document.getElementById('repoName');
+        const repoDescriptionEl = document.getElementById('repoDescription');
+        const repoStarsEl = document.getElementById('repoStars');
+        const repoForksEl = document.getElementById('repoForks');
+        const repoWatchersEl = document.getElementById('repoWatchers');
         const resultsEl = document.getElementById('results');
         const suggestionsEl = document.getElementById('suggestions');
         const suggestionsListEl = document.getElementById('suggestionsList');
         const progressBarEl = document.getElementById('progressBar');
         const progressEl = document.getElementById('progress');
         const statusTextEl = document.getElementById('statusText');
+        const historyPanelEl = document.getElementById('historyPanel');
+        const historyListEl = document.getElementById('historyList');
         
         // File upload handler
         codeFileEl.addEventListener('change', function(e) {
@@ -768,8 +935,8 @@
             document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
         }
         
-        // Fake GitHub repo analysis (mock only)
-        function fetchGitHubRepo() {
+        // GitHub repo analysis
+        async function fetchGitHubRepo() {
             const url = repoUrlEl.value.trim();
             
             if (!url.startsWith('https://github.com/')) {
@@ -779,35 +946,58 @@
             
             startAnalysis();
             
-            // This would normally be an API call
-            setTimeout(() => {
-                // Mock response with some "vibe" themed code
-                const mockCode = `import { createVibe } from 'vibe.js';
-import { GoodVibes } from 'trendy-lib';
-function checkCodeVibe(sourceCode) {
-    const vibeLevel = analyzeVibes(sourceCode);
-    const vibeCheck = createVibe(vibeLevel);
-    
-    if (vibeCheck.passing) {
-        GoodVibes.enable();
-        return {
-            status: 'Your code has excellent vibes!',
-            score: vibeLevel * 100,
-            mood: '😎'
-        };
-    } else {
-        return {
-            status: 'Could use some vibe improvements',
-            score: vibeLevel * 100,
-            mood: '🤔'
-        };
-    }
-}
-export default checkCodeVibe;`;
+            try {
+                // Extract owner and repo from URL
+                const parts = url.replace('https://github.com/', '').split('/');
+                const owner = parts[0];
+                const repo = parts[1];
                 
-                sourceCodeEl.value = mockCode;
+                if (!owner || !repo) {
+                    throw new Error('Invalid GitHub URL format');
+                }
+                
+                // Fetch repository metadata
+                const repoResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+                if (!repoResponse.ok) {
+                    throw new Error('Repository not found or not public');
+                }
+                
+                const repoData = await repoResponse.json();
+                
+                // Display repo info
+                repoNameEl.textContent = repoData.full_name;
+                repoDescriptionEl.textContent = repoData.description || 'No description provided';
+                repoStarsEl.textContent = repoData.stargazers_count;
+                repoForksEl.textContent = repoData.forks_count;
+                repoWatchersEl.textContent = repoData.watchers_count;
+                repoInfoEl.style.display = 'block';
+                
+                // Fetch repository contents
+                const contentsResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents`);
+                const contentsData = await contentsResponse.json();
+                
+                // Analyze first few code files
+                let combinedCode = '';
+                const codeFiles = contentsData.filter(file => 
+                    file.name.match(/\.(js|py|java|php|html|css|cpp|c|cs|go|rb|swift|rs|ts|json|xml|md|txt)$/i)
+                ).slice(0, 3);
+                
+                for (const file of codeFiles) {
+                    try {
+                        const fileResponse = await fetch(file.download_url);
+                        combinedCode += `// File: ${file.name}\n\n${await fileResponse.text()}\n\n`;
+                    } catch (error) {
+                        console.error(`Error fetching file ${file.name}:`, error);
+                    }
+                }
+                
+                sourceCodeEl.value = combinedCode;
                 analyzeCode();
-            }, 1500);
+            } catch (error) {
+                console.error('GitHub API error:', error);
+                showError('Error fetching repository. Make sure it\'s public and try again.');
+                completeAnalysis();
+            }
         }
         
         // Analyze file contents
@@ -853,6 +1043,8 @@ export default checkCodeVibe;`;
             sourceCodeEl.value = '';
             fileNameEl.style.display = 'none';
             codeFileEl.value = '';
+            repoInfoEl.style.display = 'none';
+            repoUrlEl.value = '';
             
             // Reset results
             resultsEl.innerHTML = `
@@ -863,6 +1055,7 @@ export default checkCodeVibe;`;
             `;
             
             suggestionsEl.style.display = 'none';
+            historyPanelEl.style.display = 'none';
         }
         
         // Start analysis animation
@@ -881,11 +1074,20 @@ export default checkCodeVibe;`;
                     progressEl.style.width = `${width}%`;
                 }
             }, 300);
+            
+            // Add rotating emoji during analysis
+            const emojis = ['🔍', '💻', '🧠', '✨', '📊'];
+            let i = 0;
+            statusTextEl.emojiInterval = setInterval(() => {
+                statusTextEl.querySelector('span').textContent = `Analyzing ${emojis[i]}...`;
+                i = (i + 1) % emojis.length;
+            }, 300);
         }
         
         // Complete analysis animation
         function completeAnalysis() {
             progressEl.style.width = '100%';
+            clearInterval(statusTextEl.emojiInterval);
             statusTextEl.innerHTML = `<i class="fas fa-check-circle" style="color: var(--success);"></i><span>Vibe check complete!</span>`;
             
             setTimeout(() => {
@@ -908,13 +1110,19 @@ export default checkCodeVibe;`;
             // Simulate analysis delay for UI effect
             setTimeout(() => {
                 const { languages, libraries } = detectLanguagesAndLibraries(code);
+                const metrics = analyzeCodeQuality(code);
+                const vibeScore = calculateVibeScore(languages, libraries, code);
+                const hasGoodVibes = vibeScore > 60;
                 
-                // Add some fun vibe-themed results
-                const hasGoodVibes = Math.random() > 0.3; // 70% chance of good vibes
-                const vibeScore = Math.floor(Math.random() * 60) + 40; // Between 40-100
-                
-                displayResults(languages, libraries, vibeScore, hasGoodVibes);
+                displayResults(languages, libraries, metrics, vibeScore, hasGoodVibes);
                 generateSuggestions(languages, libraries, vibeScore);
+                saveAnalysis({
+                    languages,
+                    libraries,
+                    score: vibeScore,
+                    snippet: code.substring(0, 100) + '...'
+                });
+                showHistory();
                 completeAnalysis();
             }, 1200);
         }
@@ -946,6 +1154,25 @@ export default checkCodeVibe;`;
                         name: lang,
                         confidence: Math.min(100, finalConfidence)
                     });
+                }
+            }
+            
+            // Add file extension detection if available
+            if (fileNameEl.textContent) {
+                const extension = fileNameEl.textContent.split('.').pop().toLowerCase();
+                for (const [lang, data] of Object.entries(languageData)) {
+                    if (data.extensions.includes(extension)) {
+                        // Boost confidence for matching extensions
+                        const existingLang = languages.find(l => l.name === lang);
+                        if (existingLang) {
+                            existingLang.confidence = Math.min(100, existingLang.confidence + 15);
+                        } else {
+                            languages.push({
+                                name: lang,
+                                confidence: 60 // Base confidence for extension match
+                            });
+                        }
+                    }
                 }
             }
             
@@ -986,8 +1213,65 @@ export default checkCodeVibe;`;
             return { languages, libraries: Object.entries(libraries).map(([name, data]) => ({ name, ...data })) };
         }
         
+        // Analyze code quality metrics
+        function analyzeCodeQuality(code) {
+            const lines = code.split('\n');
+            const commentLines = lines.filter(line => 
+                line.trim().startsWith('//') || 
+                line.trim().startsWith('#') || 
+                line.trim().startsWith('/*') || 
+                line.trim().startsWith('*') || 
+                line.trim().startsWith('*/')
+            ).length;
+            
+            const emptyLines = lines.filter(line => line.trim() === '').length;
+            
+            return {
+                lines: lines.length,
+                characters: code.length,
+                commentLines,
+                commentPercentage: Math.round((commentLines / lines.length) * 100),
+                emptyLines,
+                emptyPercentage: Math.round((emptyLines / lines.length) * 100),
+                complexity: (code.match(/\bif\b|\belse\b|\bfor\b|\bwhile\b|\bswitch\b|\bcase\b/g) || []).length,
+                functions: (code.match(/\bfunction\b|\bdef\b|\bfunc\b/g) || []).length,
+                imports: (code.match(/\bimport\b|\brequire\b/g) || []).length
+            };
+        }
+        
+        // Calculate vibe score
+        function calculateVibeScore(languages, libraries, code) {
+            let score = 50; // Base score
+            
+            // Positive factors
+            if (languages.length > 0) score += 10;
+            if (libraries.length > 3) score += 5; // Using established libraries
+            if (codeHasTests(code)) score += 15;
+            if (code.length > 200) score += 5; // More substantial code
+            
+            // Code quality metrics
+            const metrics = analyzeCodeQuality(code);
+            if (metrics.commentPercentage > 10) score += 5; // Good comments
+            if (metrics.complexity < 20) score += 5; // Not too complex
+            if (metrics.functions > 3) score += 5; // Good modularity
+            
+            // Negative factors
+            if (code.includes('eval(')) score -= 10;
+            if (code.includes('var ')) score -= 5; // Prefer let/const
+            if (metrics.emptyPercentage > 30) score -= 5; // Too many empty lines
+            
+            // Ensure score stays within bounds
+            return Math.max(20, Math.min(100, score));
+        }
+        
+        // Check if code has test indicators
+        function codeHasTests(code) {
+            const testKeywords = ['test', 'spec', 'assert', 'expect', 'should', 'it(', 'describe('];
+            return testKeywords.some(keyword => code.toLowerCase().includes(keyword));
+        }
+        
         // Display results in the UI
-        function displayResults(languages, libraries, vibeScore, hasGoodVibes) {
+        function displayResults(languages, libraries, metrics, vibeScore, hasGoodVibes) {
             if (languages.length === 0 && libraries.length === 0) {
                 resultsEl.innerHTML = `
                     <div class="no-results">
@@ -1018,6 +1302,39 @@ export default checkCodeVibe;`;
                         : 'Your code vibes could use some improvement. Check our suggestions below.'}</p>
                     <div class="progress-bar">
                         <div class="progress" style="width: ${vibeScore}%; background: ${vibeColor};"></div>
+                    </div>
+                </div>
+            `;
+            
+            // Show code metrics
+            html += `
+                <div class="metrics-card fade-in">
+                    <h3><i class="fas fa-chart-bar"></i> Code Metrics</h3>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-value">${metrics.lines}</div>
+                            <div class="metric-label">Lines</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${metrics.characters}</div>
+                            <div class="metric-label">Chars</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${metrics.commentPercentage}%</div>
+                            <div class="metric-label">Comments</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${metrics.complexity}</div>
+                            <div class="metric-label">Complexity</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${metrics.functions}</div>
+                            <div class="metric-label">Functions</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${metrics.imports}</div>
+                            <div class="metric-label">Imports</div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1119,6 +1436,10 @@ export default checkCodeVibe;`;
                         suggestions.push('Add Prettier to automate your code formatting and maintain clean vibes.');
                     }
                     
+                    if (!codeHasTests(sourceCodeEl.value)) {
+                        suggestions.push('Add unit tests with Jest or Mocha to improve code reliability and maintainability.');
+                    }
+                    
                     // Fun vibe suggestion
                     suggestions.push('Looking to level up your JS vibes? Check out Vibe.js for enhanced developer happiness!');
                 }
@@ -1132,17 +1453,27 @@ export default checkCodeVibe;`;
                         suggestions.push('Boost your Python vibes with Pylint to catch errors and enforce coding standards.');
                     }
                     
+                    if (!codeHasTests(sourceCodeEl.value)) {
+                        suggestions.push('Consider adding unit tests with pytest to ensure your Python code works as expected.');
+                    }
+                    
                     // Fun vibe suggestion
                     suggestions.push('Want to maximize your Python vibes? Try Vibes.py for enhanced developer experience!');
+                }
+                
+                if (primaryLang === 'java') {
+                    if (!detectedLibNames.includes('lombok')) {
+                        suggestions.push('Reduce boilerplate code in Java by using Lombok annotations.');
+                    }
+                    
+                    if (!codeHasTests(sourceCodeEl.value)) {
+                        suggestions.push('Add JUnit tests to your Java code to improve reliability and maintainability.');
+                    }
                 }
                 
                 // General development suggestions
                 if (libraries.length <= 3) {
                     suggestions.push('Adding more well-chosen libraries can enhance your development experience and vibes.');
-                }
-                
-                if (!codeHasTests(sourceCodeEl.value)) {
-                    suggestions.push('Unit tests significantly improve code reliability vibes - consider adding a testing framework.');
                 }
             }
             
@@ -1173,10 +1504,70 @@ export default checkCodeVibe;`;
             }, 500);
         }
         
-        // Helper function to check if code has test indicators
-        function codeHasTests(code) {
-            const testKeywords = ['test', 'spec', 'assert', 'expect', 'should', 'it('];
-            return testKeywords.some(keyword => code.includes(keyword));
+        // Save analysis to history
+        function saveAnalysis(results) {
+            const history = JSON.parse(localStorage.getItem('vibeHistory') || '[]');
+            history.unshift({
+                date: new Date().toISOString(),
+                languages: results.languages,
+                libraries: results.libraries,
+                score: results.score,
+                snippet: results.snippet
+            });
+            
+            // Keep only last 10 analyses
+            localStorage.setItem('vibeHistory', JSON.stringify(history.slice(0, 10)));
+        }
+        
+        // Show analysis history
+        function showHistory() {
+            const history = JSON.parse(localStorage.getItem('vibeHistory') || '[]');
+            if (history.length === 0) return;
+            
+            historyPanelEl.style.display = 'block';
+            
+            const historyHTML = history.map((item, index) => `
+                <div class="history-item fade-in" style="animation-delay: ${index * 100}ms;" onclick="loadHistoryItem(${index})">
+                    <small>${new Date(item.date).toLocaleString()}</small>
+                    <p>${item.snippet}</p>
+                    <div class="badge" style="background: ${getVibeColor(item.score)}20; color: ${getVibeColor(item.score)}; border-color: ${getVibeColor(item.score)};">
+                        ${item.score}/100
+                    </div>
+                </div>
+            `).join('');
+            
+            historyListEl.innerHTML = historyHTML;
+            
+            // Trigger animations
+            setTimeout(() => {
+                document.querySelectorAll('.history-item.fade-in').forEach(el => {
+                    el.classList.add('active');
+                });
+            }, 100);
+        }
+        
+        // Load history item
+        function loadHistoryItem(index) {
+            const history = JSON.parse(localStorage.getItem('vibeHistory') || '[]');
+            if (index >= history.length) return;
+            
+            const item = history[index];
+            sourceCodeEl.value = item.snippet;
+            
+            // Simulate analysis for UI
+            startAnalysis();
+            setTimeout(() => {
+                displayResults(item.languages, item.libraries, analyzeCodeQuality(sourceCodeEl.value), item.score, item.score > 60);
+                generateSuggestions(item.languages, item.libraries, item.score);
+                completeAnalysis();
+            }, 500);
+        }
+        
+        // Get color based on vibe score
+        function getVibeColor(score) {
+            if (score > 80) return 'var(--success)';
+            if (score > 60) return 'var(--warning)';
+            return 'var(--danger)';
         }
         
         // Helper function to capitalize words
@@ -1211,5 +1602,5 @@ export default checkCodeVibe;`;
             return icons[lang] || 'code';
         }
     </script>
-<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <a href="https://enzostvs-deepsite.hf.space" style="color: #fff;" target="_blank" >DeepSite</a> <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;"></p></body>
+</body>
 </html>
