@@ -28,3 +28,26 @@
 1. **Clone or Download**:
    ```bash
    git clone https://github.com/your-username/vibe-checker.git
+
+
+## 🎠 How It Works
+
+### ✨ Choose Your Code Style
+
+- 💌 **Paste Your Code** – Like sending a love letter to Vibe Checker.
+- 🧸 **Upload a File** – Share a code file (`.js`, `.py`, `.java`, etc.) for a gentle snuggle.
+- 🌐 **Link a GitHub Repo** – Drop a public link for mock analysis (real-time support coming soon!).
+
+### 💫 Check the Vibes
+
+- Tap the **Check Vibe** button and let the magic happen! 🪄  
+- Watch the cute little progress bar as your results load.
+
+### 🌈 See the Sparkly Results
+
+- **Vibe Score** – A happiness rating for your code’s overall cuteness and health.
+- **Detected Languages & Libraries** – With confidence levels and heart eyes. 😍
+- **Vibe Boost Tips** – Friendly, non-judgy tips to make your code shine brighter. ✨
+
+
+   
