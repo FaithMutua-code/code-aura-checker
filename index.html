@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Checker - Code Analysis Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #9c27b0;
+            --secondary: #7b1fa2;
+            --accent: #e91e63;
+            --light: #f3e5f5;
+            --dark: #212121;
+            --success: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --vibe-purple: #7b1fa2;
+            --vibe-pink: #e91e63;
+            --vibe-gradient: linear-gradient(135deg, var(--vibe-purple) 0%, var(--vibe-pink) 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comfortaa', cursive, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e1e5ee 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            background: var(--vibe-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+            position: relative;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        
+        header h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 6px;
+            background: var(--vibe-gradient);
+            border-radius: 4px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            color: var(--dark);
+            max-width: 700px;
+            margin: 1rem auto;
+            opacity: 0.8;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: space-between;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(123, 31, 162, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid rgba(156, 39, 176, 0.1);
+        }
+        
+        .input-section:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(123, 31, 162, 0.15);
+        }
+        
+        .input-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .input-section h2 i {
+            color: var(--accent);
+        }
+        
+        .input-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 1rem;
+            border: 2px solid rgba(156, 39, 176, 0.2);
+            border-radius: 12px;
+            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+            resize: vertical;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: inset 0 2px 5px rgba(233, 30, 99, 0.1), 0 0 0 3px rgba(233, 30, 99, 0.2);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: block;
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            border: 2px dashed rgba(156, 39, 176, 0.3);
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .file-label:hover {
+            background: #e1bee7;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .file-label i {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+        
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: var(--vibe-gradient);
+            color: white;
+            box-shadow: 0 4px 10px rgba(156, 39, 176, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 15px rgba(123, 31, 162, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--secondary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--light);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(156, 39, 176, 0.1);
+        }
+        
+        .result-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(123, 31, 162, 0.1);
+            transition: transform 0.3s ease;
+            border: 2px solid rgba(156, 39, 176, 0.1);
+        }
+        
+        .result-section:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(123, 31, 162, 0.15);
+        }
+        
+        .result-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .result-section h2 i {
+            color: var(--accent);
+        }
+        
+        .detected-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .language-card, .library-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border-left: 6px solid var(--primary);
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .language-card:hover, .library-card:hover {
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 6px 15px rgba(123, 31, 162, 0.15);
+        }
+        
+        .language-card h3, .library-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--dark);
+            font-size: 1.3rem;
+        }
+        
+        .language-card p, .library-card p {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-left: 1.8rem;
+            line-height: 1.5;
+        }
+        
+        .confidence {
+            display: inline-block;
+            margin-top: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            background: rgba(156, 39, 176, 0.15);
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+            font-size: 1.2rem;
+            background: var(--light);
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        
+        .no-results i {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .suggestions {
+            margin-top: 2rem;
+            padding: 1.75rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 6px solid var(--success);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            background: linear-gradient(to bottom right, rgba(76, 175, 80, 0.05) 0%, rgba(76, 175, 80, 0.15) 100%);
+        }
+        
+        .suggestions h3 {
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.4rem;
+        }
+        
+        .suggestion-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .suggestion-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .suggestion-item i {
+            color: var(--success);
+            font-size: 1.2rem;
+            margin-top: 0.2rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(156, 39, 176, 0.15);
+            border-radius: 4px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--vibe-gradient);
+            border-radius: 4px;
+            transition: width 0.4s ease, background 0.3s ease;
+        }
+        
+        .status {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status i {
+            color: var(--accent);
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            body {
+                padding: 1.5rem;
+            }
+            
+            header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 1rem;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite ease-in-out;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 220px;
+            background-color: var(--dark);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 0.8rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--dark) transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-right: 0.6rem;
+            margin-bottom: 0.6rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .badge-primary {
+            background-color: rgba(156, 39, 176, 0.15);
+            color: var(--primary);
+            border: 1px solid rgba(156, 39, 176, 0.3);
+        }
+        
+        .badge-secondary {
+            background-color: rgba(123, 31, 162, 0.1);
+            color: var(--secondary);
+            border: 1px solid rgba(123, 31, 162, 0.3);
+        }
+        
+        .badge-accent {
+            background-color: rgba(233, 30, 99, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(233, 30, 99, 0.3);
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e1bee7;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 4px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #757575;
+            position: relative;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--secondary);
+        }
+        
+        .tab:hover:not(.active) {
+            color: var(--accent);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Vibe rating */
+        .vibe-rating {
+            display: inline-block;
+            margin-left: 0.5rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(156, 39, 176, 0.1);
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        
+        /* Theme elements */
+        .theme-element {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(233, 30, 99, 0.1) 0%, rgba(156, 39, 176, 0.1) 100%);
+            z-index: -1;
+        }
+        
+        .theme-element-1 {
+            top: 10%;
+            left: 5%;
+        }
+        
+        .theme-element-2 {
+            bottom: 10%;
+            right: 5%;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-element theme-element-1"></div>
+    <div class="theme-element theme-element-2"></div>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-viruses"></i> Vibe Checker</h1>
+            <p>Scan your codebase to detect the technical vibes - languages, frameworks, and development patterns in your project. Get insights and suggestions to improve your stack.</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="input-section">
+                <h2><i class="fas fa-heartbeat"></i> Check My Vibe</h2>
+                
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('input')">Paste Code</div>
+                    <div class="tab" onclick="switchTab('upload')">Upload File</div>
+                    <div class="tab" onclick="switchTab('repo')">GitHub Repo</div>
+                </div>
+                
+                <div class="tab-content active" id="input-tab">
+                    <div class="input-container">
+                        <textarea id="sourceCode" placeholder="Paste your source code here to check its vibes..."></textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="analyzeCode()">
+                        <i class="fas fa-heartbeat"></i> Check Vibe
+                    </button>
+                    
+                    <button class="btn btn-secondary" onclick="clearCode()">
+                        <i class="fas fa-trash-alt"></i> Clear
+                    </button>
+                </div>
+                
+                <div class="tab-content" id="upload-tab">
+                    <input type="file" id="codeFile" class="file-input" accept=".js,.py,.java,.php,.html,.css,.cpp,.c,.cs,.go,.rb,.swift,.rs,.ts,.json,.xml,.md,.txt">
+                    <label for="codeFile" class="file-label">
+                        <i class="fas fa-cloud-upload-alt"></i> Upload Code Files
+                    </label>
+                    
+                    <p id="fileName" style="margin-bottom: 1.5rem; display: none; font-weight: 500; color: var(--secondary);"></p>
+                    
+                    <button class="btn btn-primary" onclick="analyzeFile()">
+                        <i class="fas fa-heartbeat"></i> Check File Vibe
+                    </button>
+                </div>
+                
+                <div class="tab-content" ID="repo-tab">
+                    <div class="input-container">
+                        <input type="text" id="repoUrl" class="input-field" placeholder="https://github.com/user/repo" style="width: 100%; padding: 1rem; border-radius: 12px; border: 2px solid rgba(156, 39, 176, 0.2); margin-bottom: 1.5rem; font-size: 1rem;">
+                        
+                        <div class="tooltip" style="margin-bottom: 1.5rem;">
+                            <i class="fas fa-info-circle" style="color: var(--accent);"></i>
+                            <span class="tooltiptext">Currently supports public GitHub repositories only. Private repo vibes coming soon!</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="fetchGitHubRepo()">
+                        <i class="fab fa-github"></i> Check Repo Vibe
+                    </button>
+                </div>
+                
+                <div class="progress-bar" style="display: none;" id="progressBar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                
+                <p class="status" id="statusText" style="display: none;">
+                    <i class="fas fa-heartbeat pulse"></i>
+                    <span>Analyzing your code vibes...</span>
+                </p>
+            </div>
+            
+            <div class="result-section">
+                <h2><i class="fas fa-chart-line"></i> Vibe Report</h2>
+                
+                <div class="suggestions" id="suggestions" style="display: none;">
+                    <h3><i class="fas fa-lightbulb"></i> Vibe Boosts (Suggestions)</h3>
+                    <div id="suggestionsList"></div>
+                </div>
+                
+                <div id="results">
+                    <div class="no-results">
+                        <i class="fas fa-ghost"></i>
+                        <p>No code vibes detected yet. Paste, upload, or link your code to get started.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Store language and library data
+        const languageData = {
+            'javascript': { keywords: ['function', 'const', 'let', 'var', '=>', 'console.log', 'import', 'export', 'require'], 
+                            extensions: ['js', 'jsx', 'mjs'] },
+            'python': { keywords: ['def ', 'import ', 'class ', 'print(', 'lambda ', 'try:', 'except ', 'with '], 
+                        extensions: ['py', 'pyw'] },
+            'java': { keywords: ['public ', 'class ', 'import ', 'void ', 'System.out.println', 'new ', 'extends '], 
+                    extensions: ['java'] },
+            'c': { keywords: ['#include', 'printf', 'scanf', 'int ', 'void ', 'char ', 'struct ', 'return '], 
+                extensions: ['c', 'h'] },
+            'c++': { keywords: ['#include', 'cout <<', 'cin >>', 'std::', 'using namespace', 'template<', 'class '], 
+                    extensions: ['cpp', 'hpp', 'hxx'] },
+            'c#': { keywords: ['using ', 'namespace ', 'class ', 'public ', 'void ', 'Console.WriteLine', 'var ', '=>'], 
+                    extensions: ['cs'] },
+            'php': { keywords: ['<?php', 'echo ', 'function ', 'class ', 'namespace ', 'use ', '$_GET', '$_POST'], 
+                    extensions: ['php'] },
+            'ruby': { keywords: ['def ', 'class ', 'require ', 'puts ', 'module ', 'do ', 'end', 'attr_'], 
+                    extensions: ['rb'] },
+            'go': { keywords: ['package ', 'import ', 'func ', 'var ', 'const ', 'type ', 'for ', 'if '], 
+                extensions: ['go'] },
+            'swift': { keywords: ['import ', 'func ', 'var ', 'let ', 'class ', 'struct ', 'enum ', 'extension '], 
+                    extensions: ['swift'] },
+            'rust': { keywords: ['fn ', 'let ', 'mut ', 'pub ', 'impl ', 'trait ', 'use ', 'match '], 
+                    extensions: ['rs'] },
+            'typescript': { keywords: ['type ', 'interface ', 'enum ', 'import ', 'export ', 'declare ', '=>', 'let ', 'const '], 
+                            extensions: ['ts', 'tsx'] },
+            'html': { keywords: ['<!DOCTYPE html>', '<html', '<head', '<body', '<div', '<span', '<a ', '<p '], 
+                    extensions: ['html', 'htm'] },
+            'css': { keywords: ['{', '}', ':', ';', '@media', '@keyframes', '@import', '@font-face'], 
+                    extensions: ['css', 'scss', 'sass', 'less'] },
+            'bash': { keywords: ['#!/bin/bash', '#!/bin/sh', 'echo ', 'if [', 'for ', 'while ', 'do ', 'done'], 
+                    extensions: ['sh'] },
+            'powershell': { keywords: ['#Requires', 'Write-Host', 'function ', 'param(', 'foreach ', 'if ', 'else '], 
+                            extensions: ['ps1'] },
+            'kotlin': { keywords: ['fun ', 'val ', 'var ', 'class ', 'import ', 'when ', 'object ', 'companion '], 
+                        extensions: ['kt'] },
+            'dart': { keywords: ['void ', 'main()', 'class ', 'import ', '=>', 'final ', 'const ', 'async ', 'Future<'], 
+                    extensions: ['dart'] },
+            'scala': { keywords: ['def ', 'val ', 'var ', 'class ', 'object ', 'trait ', 'extends ', 'with '], 
+                    extensions: ['scala'] }
+        };
+        
+        const libraryData = {
+            'javascript': {
+                'React': ['ReactDOM', 'React.Component', 'useState', 'useEffect'],
+                'React Router': ['BrowserRouter', 'Route', 'Switch', 'Link', 'useHistory'],
+                'jQuery': ['$', 'jQuery'],
+                'Vue.js': ['Vue', 'new Vue', 'v-model', 'v-for', 'v-if'],
+                'Angular': ['@NgModule', '@Component', '@Injectable', 'ngOnInit'],
+                'Express.js': ['express()', 'app.get', 'app.post', 'app.use', 'req.params'],
+                'Moment.js': ['moment(', 'moment().format', 'moment().add'],
+                'Lodash': ['_.', '_.map', '_.filter', '_.reduce'],
+                'Axios': ['axios.get', 'axios.post', 'axios.put', 'axios.delete'],
+                'Redux': ['createStore', 'combineReducers', 'useDispatch', 'useSelector'],
+                'Next.js': ['getServerSideProps', 'getStaticProps', 'useRouter', 'next/link'],
+                'Three.js': ['THREE.', 'new THREE.Scene', 'new THREE.Mesh', 'new THREE.WebGLRenderer'],
+                'Trendy': ['useVibe()', 'setGoodVibes(true)', 'optimisticUI', 'web5.0', 'metaverseReady'], // Added some fun "vibe" libraries
+                'Vibe.js': ['createVibe()', 'goodVibesOnly', 'checkVibeLevel']
+            },
+            'python': {
+                'Django': ['from django.', 'django.db.models', 'HttpResponse', 'render(', 'urlpatterns'],
+                'Flask': ['Flask(', 'app.route(', 'flask.', 'request.', 'jsonify('],
+                'Pandas': ['pd.', 'pandas.', 'DataFrame', 'read_csv', 'Series'],
+                'NumPy': ['np.', 'numpy.', 'array(', 'linspace(', 'zeros('],
+                'Matplotlib': ['plt.', 'matplotlib.', 'plot(', 'figure(', 'subplot('],
+                'TensorFlow': ['tensorflow.', 'tf.', 'keras.', 'Dense', 'Sequential'],
+                'PyTorch': ['torch.', 'nn.', 'Tensor(', 'optim.', 'Dataset'],
+                'FastAPI': ['FastAPI(', 'app.get(', 'app.post(', 'from fastapi import'],
+                'Pytest': ['pytest.', 'with pytest.raises', 'fixture(', 'mark.'],
+                'Requests': ['requests.get', 'requests.post', 'response.json'],
+                'Vibes.py': ['good_vibes.check()', 'vibe_report.generate()'] // Added some fun "vibe" libraries
+            },
+            'java': {
+                'Spring Boot': ['@SpringBootApplication', '@RestController', '@Autowired', '@GetMapping'],
+                'JUnit': ['@Test', 'Assertions.', '@BeforeEach', '@AfterEach'],
+                'Mockito': ['@Mock', '@InjectMocks', 'Mockito.', 'when('],
+                'Hibernate': ['@Entity', '@Table', '@Column', 'SessionFactory'],
+                'Lombok': ['@Data', '@Getter', '@Setter', '@NoArgsConstructor'],
+                'Jackson': ['ObjectMapper', '@JsonIgnore', '@JsonProperty', 'JsonNode'],
+                'Apache Commons': ['StringUtils.', 'FileUtils.', 'ArrayUtils.', 'CollectionUtils.'],
+                'JavaVibes': ['VibeCheck.run()', 'GoodVibesOnly.enable()'] // Added some fun "vibe" libraries
+            }
+        };
+        
+        // DOM elements
+        const sourceCodeEl = document.getElementById('sourceCode');
+        const codeFileEl = document.getElementById('codeFile');
+        const fileNameEl = document.getElementById('fileName');
+        const repoUrlEl = document.getElementById('repoUrl');
+        const resultsEl = document.getElementById('results');
+        const suggestionsEl = document.getElementById('suggestions');
+        const suggestionsListEl = document.getElementById('suggestionsList');
+        const progressBarEl = document.getElementById('progressBar');
+        const progressEl = document.getElementById('progress');
+        const statusTextEl = document.getElementById('statusText');
+        
+        // File upload handler
+        codeFileEl.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                fileNameEl.textContent = `Selected: ${e.target.files[0].name}`;
+                fileNameEl.style.display = 'block';
+            } else {
+                fileNameEl.style.display = 'none';
+            }
+        });
+        
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        }
+        
+        // Fake GitHub repo analysis (mock only)
+        function fetchGitHubRepo() {
+            const url = repoUrlEl.value.trim();
+            
+            if (!url.startsWith('https://github.com/')) {
+                showError('Please enter a valid GitHub repository URL');
+                return;
+            }
+            
+            startAnalysis();
+            
+            // This would normally be an API call
+            setTimeout(() => {
+                // Mock response with some "vibe" themed code
+                const mockCode = `import { createVibe } from 'vibe.js';
+import { GoodVibes } from 'trendy-lib';
+function checkCodeVibe(sourceCode) {
+    const vibeLevel = analyzeVibes(sourceCode);
+    const vibeCheck = createVibe(vibeLevel);
+    
+    if (vibeCheck.passing) {
+        GoodVibes.enable();
+        return {
+            status: 'Your code has excellent vibes!',
+            score: vibeLevel * 100,
+            mood: '😎'
+        };
+    } else {
+        return {
+            status: 'Could use some vibe improvements',
+            score: vibeLevel * 100,
+            mood: '🤔'
+        };
+    }
+}
+export default checkCodeVibe;`;
+                
+                sourceCodeEl.value = mockCode;
+                analyzeCode();
+            }, 1500);
+        }
+        
+        // Analyze file contents
+        function analyzeFile() {
+            const file = codeFileEl.files[0];
+            
+            if (!file) {
+                showError('Please select a file first');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                sourceCodeEl.value = e.target.result;
+                analyzeCode();
+            };
+            
+            reader.onerror = function() {
+                showError('Error reading file. Please try again.');
+            };
+            
+            startAnalysis();
+            reader.readAsText(file);
+        }
+        
+        // Show error message
+        function showError(message) {
+            const errorEl = document.createElement('div');
+            errorEl.className = 'language-card';
+            errorEl.style.borderLeft = '6px solid var(--danger)';
+            errorEl.innerHTML = `
+                <h3><i class="fas fa-heart-broken" style="color: var(--danger);"></i> Bad Vibes</h3>
+                <p>${message}</p>
+            `;
+            
+            resultsEl.innerHTML = '';
+            resultsEl.appendChild(errorEl);
+        }
+        
+        // Clear the code input
+        function clearCode() {
+            sourceCodeEl.value = '';
+            fileNameEl.style.display = 'none';
+            codeFileEl.value = '';
+            
+            // Reset results
+            resultsEl.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-ghost"></i>
+                    <p>No code vibes detected yet. Paste, upload, or link your code to get started.</p>
+                </div>
+            `;
+            
+            suggestionsEl.style.display = 'none';
+        }
+        
+        // Start analysis animation
+        function startAnalysis() {
+            progressBarEl.style.display = 'block';
+            statusTextEl.style.display = 'flex';
+            progressEl.style.width = '0%';
+            
+            // Animate progress bar
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 90) {
+                    clearInterval(interval);
+                } else {
+                    width += 10;
+                    progressEl.style.width = `${width}%`;
+                }
+            }, 300);
+        }
+        
+        // Complete analysis animation
+        function completeAnalysis() {
+            progressEl.style.width = '100%';
+            statusTextEl.innerHTML = `<i class="fas fa-check-circle" style="color: var(--success);"></i><span>Vibe check complete!</span>`;
+            
+            setTimeout(() => {
+                progressBarEl.style.display = 'none';
+                statusTextEl.style.display = 'none';
+            }, 1500);
+        }
+        
+        // Main analysis function
+        function analyzeCode() {
+            const code = sourceCodeEl.value.trim();
+            
+            if (!code) {
+                showError('Please enter or upload some code to check its vibes');
+                return;
+            }
+            
+            startAnalysis();
+            
+            // Simulate analysis delay for UI effect
+            setTimeout(() => {
+                const { languages, libraries } = detectLanguagesAndLibraries(code);
+                
+                // Add some fun vibe-themed results
+                const hasGoodVibes = Math.random() > 0.3; // 70% chance of good vibes
+                const vibeScore = Math.floor(Math.random() * 60) + 40; // Between 40-100
+                
+                displayResults(languages, libraries, vibeScore, hasGoodVibes);
+                generateSuggestions(languages, libraries, vibeScore);
+                completeAnalysis();
+            }, 1200);
+        }
+        
+        // Detect languages and libraries in code
+        function detectLanguagesAndLibraries(code) {
+            const languages = [];
+            const libraries = {};
+            
+            // First detect the primary language
+            for (const [lang, data] of Object.entries(languageData)) {
+                let score = 0;
+                const keywords = data.keywords;
+                
+                for (const keyword of keywords) {
+                    if (code.includes(keyword)) {
+                        score += 1;
+                    }
+                }
+                
+                if (score > 0) {
+                    // Calculate confidence as percentage of keywords found (capped at 80% for matches)
+                    const confidence = Math.min(80, Math.round((score / keywords.length) * 100));
+                    
+                    // Add some random variance (simulating more complex analysis)
+                    const finalConfidence = confidence + Math.floor(Math.random() * 20);
+                    
+                    languages.push({
+                        name: lang,
+                        confidence: Math.min(100, finalConfidence)
+                    });
+                }
+            }
+            
+            // If no languages found, try to guess from structure
+            if (languages.length === 0) {
+                if (code.includes('<?') || code.includes('?>')) {
+                    languages.push({ name: 'php', confidence: 70 });
+                } else if (/<\w+>.*<\/\w+>/.test(code)) {
+                    languages.push({ name: 'html', confidence: 60 });
+                } else if (/[{};]+/.test(code)) {
+                    languages.push({ name: 'c-style language', confidence: 40 });
+                }
+            }
+            
+            // Sort by confidence
+            languages.sort((a, b) => b.confidence - a.confidence);
+            
+            // Detect libraries based on primary language
+            if (languages.length > 0) {
+                const primaryLang = languages[0].name;
+                
+                if (libraryData[primaryLang]) {
+                    for (const [lib, identifiers] of Object.entries(libraryData[primaryLang])) {
+                        for (const identifier of identifiers) {
+                            if (code.includes(identifier) && !libraries[lib]) {
+                                // Found at least one identifier from this library
+                                libraries[lib] = {
+                                    language: primaryLang,
+                                    identifiersFound: [identifier]
+                                };
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return { languages, libraries: Object.entries(libraries).map(([name, data]) => ({ name, ...data })) };
+        }
+        
+        // Display results in the UI
+        function displayResults(languages, libraries, vibeScore, hasGoodVibes) {
+            if (languages.length === 0 && libraries.length === 0) {
+                resultsEl.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-question-circle"></i>
+                        <p>Could not confidently detect any languages or libraries. Try with more code.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            // Show "vibe" rating at the top
+            const vibeIcon = hasGoodVibes ? 'fa-smile-beam' : 'fa-meh';
+            const vibeColor = hasGoodVibes ? 'var(--success)' : 'var(--warning)';
+            
+            html += `
+                <div class="language-card" style="border-left-color: ${vibeColor}; margin-bottom: 1.5rem;">
+                    <h3>
+                        <i class="fas ${vibeIcon}" style="color: ${vibeColor};"></i>
+                        Code Vibe Level
+                        <span class="vibe-rating" style="background: ${vibeColor + '20'}; color: ${vibeColor};">
+                            ${vibeScore}/100
+                        </span>
+                    </h3>
+                    <p>${hasGoodVibes 
+                        ? 'Your code has great vibes! Keep up the good work.' 
+                        : 'Your code vibes could use some improvement. Check our suggestions below.'}</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${vibeScore}%; background: ${vibeColor};"></div>
+                    </div>
+                </div>
+            `;
+            
+            // Then show suggestions section
+            suggestionsEl.style.display = 'block';
+            
+            // Then show libraries if any
+            if (libraries.length > 0) {
+                html += '<h3 style="margin: 1.5rem 0 1rem 0;">Detected Libraries & Frameworks</h3>';
+                
+                libraries.forEach((lib, index) => {
+                    // Add delay for staggered animation
+                    const delay = index * 100;
+                    const identifiers = lib.identifiersFound.join(', ');
+                    
+                    html += `
+                        <div class="library-card fade-in" style="animation-delay: ${delay}ms;">
+                            <h3>
+                                <i class="fas fa-box-open"></i>
+                                ${capitalize(lib.name)}
+                                <span class="badge badge-secondary" style="margin-left: 0.5rem;">
+                                    for ${capitalize(lib.language)}
+                                </span>
+                            </h3>
+                            <p><strong>Identifiers found:</strong> ${identifiers}</p>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Finally show languages
+            if (languages.length > 0) {
+                html += '<h3 style="margin: 1.5rem 0 1rem 0;">Detected Languages</h3>';
+                
+                languages.forEach((lang, index) => {
+                    // Add delay for staggered animation
+                    const delay = (libraries.length + index) * 100;
+                    
+                    html += `
+                        <div class="language-card fade-in" style="animation-delay: ${delay}ms;">
+                            <h3>
+                                <i class="fab fa-${getLanguageIcon(lang.name)}"></i>
+                                ${capitalize(lang.name)} 
+                                <span class="badge badge-primary" style="margin-left: 0.5rem;">
+                                    ${lang.confidence}% confidence
+                                </span>
+                            </h3>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: ${lang.confidence}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Insert results after the suggestions
+            suggestionsEl.insertAdjacentHTML('afterend', html);
+            
+            // Force reflow to trigger animations
+            void resultsEl.offsetWidth;
+            
+            // Add active class to all fade-in elements after a short delay
+            setTimeout(() => {
+                document.querySelectorAll('.fade-in').forEach(el => {
+                    el.classList.add('active');
+                });
+            }, 100);
+        }
+        
+        // Generate suggestions based on detected tech stack
+        function generateSuggestions(languages, libraries, vibeScore) {
+            const suggestions = [];
+            const detectedLibNames = libraries.map(lib => lib.name.toLowerCase());
+            
+            // General vibe feedback
+            if (vibeScore > 80) {
+                suggestions.push('🔥 Excellent vibes detected! Your codebase is in great shape. Keep up the good work!');
+            } else if (vibeScore > 60) {
+                suggestions.push('👍 Solid vibes! Your code looks good but could benefit from some refinements.');
+            } else {
+                suggestions.push('⚠️ Your code vibes could use some improvement. Consider these suggestions to level up your development game.');
+            }
+            
+            if (languages.length > 0) {
+                const primaryLang = languages[0].name;
+                
+                // Language specific suggestions
+                if (primaryLang === 'javascript') {
+                    if (!detectedLibNames.includes('react') && !detectedLibNames.includes('vue.js') && !detectedLibNames.includes('angular')) {
+                        suggestions.push('Consider using a frontend framework like React, Vue.js, or Angular to enhance your development vibes.');
+                    }
+                    
+                    if (!detectedLibNames.includes('eslint')) {
+                        suggestions.push('Improve your code style vibes with ESLint to maintain consistency and catch potential issues.');
+                    }
+                    
+                    if (!detectedLibNames.includes('prettier')) {
+                        suggestions.push('Add Prettier to automate your code formatting and maintain clean vibes.');
+                    }
+                    
+                    // Fun vibe suggestion
+                    suggestions.push('Looking to level up your JS vibes? Check out Vibe.js for enhanced developer happiness!');
+                }
+                
+                if (primaryLang === 'python') {
+                    if (!detectedLibNames.includes('black')) {
+                        suggestions.push('Python vibes improve dramatically with Black - the uncompromising code formatter.');
+                    }
+                    
+                    if (!detectedLibNames.includes('pylint')) {
+                        suggestions.push('Boost your Python vibes with Pylint to catch errors and enforce coding standards.');
+                    }
+                    
+                    // Fun vibe suggestion
+                    suggestions.push('Want to maximize your Python vibes? Try Vibes.py for enhanced developer experience!');
+                }
+                
+                // General development suggestions
+                if (libraries.length <= 3) {
+                    suggestions.push('Adding more well-chosen libraries can enhance your development experience and vibes.');
+                }
+                
+                if (!codeHasTests(sourceCodeEl.value)) {
+                    suggestions.push('Unit tests significantly improve code reliability vibes - consider adding a testing framework.');
+                }
+            }
+            
+            // Display suggestions at the top
+            let html = '';
+            suggestions.forEach((suggestion, index) => {
+                const icon = suggestion.startsWith('🔥') ? 'fa-fire' : 
+                             suggestion.startsWith('⚠️') ? 'fa-exclamation-triangle' :
+                             suggestion.startsWith('👍') ? 'fa-thumbs-up' : 'fa-lightbulb';
+                
+                const coloredText = suggestion.replace('🔥', '').replace('⚠️', '').replace('👍', '');
+                
+                html += `
+                    <div class="suggestion-item fade-in" style="animation-delay: ${index * 100}ms;">
+                        <i class="fas ${icon}" style="color: var(--${icon === 'fa-fire' ? 'warning' : 
+                                                                    icon === 'fa-exclamation-triangle' ? 'danger' : 
+                                                                    icon === 'fa-thumbs-up' ? 'success' : 'success'});"></i>
+                        ${coloredText}
+                    </div>
+                `;
+            });
+            
+            suggestionsListEl.innerHTML = html;
+            
+            // Scroll suggestions into view
+            setTimeout(() => {
+                suggestionsEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 500);
+        }
+        
+        // Helper function to check if code has test indicators
+        function codeHasTests(code) {
+            const testKeywords = ['test', 'spec', 'assert', 'expect', 'should', 'it('];
+            return testKeywords.some(keyword => code.includes(keyword));
+        }
+        
+        // Helper function to capitalize words
+        function capitalize(str) {
+            return str.replace(/\b\w/g, char => char.toUpperCase());
+        }
+        
+        // Get icon for language
+        function getLanguageIcon(lang) {
+            const icons = {
+                'javascript': 'js',
+                'python': 'python',
+                'java': 'java',
+                'c': 'cuttlefish',
+                'c++': 'cuttlefish',
+                'c#': 'microsoft',
+                'php': 'php',
+                'ruby': 'ruby',
+                'go': 'golang',
+                'swift': 'swift',
+                'rust': 'rust',
+                'typescript': 'js-square',
+                'html': 'html5',
+                'css': 'css3',
+                'bash': 'terminal',
+                'powershell': 'microsoft',
+                'kotlin': 'android',
+                'dart': 'mobile',
+                'scala': 'scala'
+            };
+            
+            return icons[lang] || 'code';
+        }
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <a href="https://enzostvs-deepsite.hf.space" style="color: #fff;" target="_blank" >DeepSite</a> <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;"></p></body>
+</html>
