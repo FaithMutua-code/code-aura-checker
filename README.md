@@ -40,7 +40,7 @@
 
 ### 💫 Check the Auras
 
-- Press the **Check Aura** button and watch the magic unfold! 🪄  
+- Press the **Scan my Aura** button and watch the magic unfold! 🪄  
 - Giggle at the adorable progress bar as your results twirl in! 🌟
 
 ### 🌼 See the Glittery Results
@@ -48,3 +48,12 @@
 - **Aura Score** – A super-cute rating for your code’s happiness and health! 😽
 - **Detected Languages & Libraries** – With sparkly confidence levels and heart-shaped winks. 😘
 - **Aura Boost Tips** – Kind, non-judgy nudges to make your code glow even brighter! ✨
+
+  ## 🐼 Contributing – Join the Sparkly Party! 🎉
+
+Want to make Aura Checker even *fluffier*? 🌟 We’d love your help to sprinkle more magic on this project! 💖 Here’s how you can join the cuddly coding adventure:
+
+- 🧶 **Share Your Ideas** – Got a cute feature in mind? Open an issue on our GitHub repo and tell us your sparkly thoughts! 🌈
+- 🐾 **Code with Love** – Fork the repo, add some pastel-powered code, and send a pull request. We adore contributions like new language detectors or kawaii UI tweaks! 😻
+- 🍬 **Spread the Word** – Tell your friends about Aura Checker and help our little buddy grow! 🐰
+- 🌸 **Be Kind** – Follow our code of conduct to keep the community as warm and snuggly as a basket of kittens! 🧸
