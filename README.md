@@ -40,7 +40,7 @@
 
 ### 💫 Check the Auras
 
-- Press the **Check Aura** button and watch the magic unfold! 🪄  
+- Press the **Scan my Aura** button and watch the magic unfold! 🪄  
 - Giggle at the adorable progress bar as your results twirl in! 🌟
 
 ### 🌼 See the Glittery Results
