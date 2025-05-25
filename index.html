@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibe Checker Pro - Advanced Code Analysis Tool</title>
+    <title>Aura Checker Pro – Magical Code Aura Scanner ✨</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
@@ -11,59 +11,59 @@
 <body>
     <div class="theme-element theme-element-1"></div>
     <div class="theme-element theme-element-2"></div>
-    
+
     <div class="container">
         <header>
-            <h1><i class="fas fa-viruses"></i> Vibe Checker Pro</h1>
-            <p>Advanced code analysis tool to detect the technical vibes in your project. Get detailed insights and actionable suggestions to improve your code quality.</p>
+            <h1><i class="fas fa-viruses"></i> Aura Checker Pro</h1>
+            <p>A magical scanner for your code’s aura ✨ Get cozy tips and sparkly insights to help your code shine brighter!</p>
         </header>
-        
+
         <div class="app-container">
             <div class="input-section">
-                <h2><i class="fas fa-heartbeat"></i> Check My Vibe</h2>
-                
+                <h2><i class="fas fa-heartbeat"></i> Scan My Aura</h2>
+
                 <div class="tabs">
-                    <div class="tab active" onclick="switchTab('input')">Paste Code</div>
-                    <div class="tab" onclick="switchTab('upload')">Upload File</div>
-                    <div class="tab" onclick="switchTab('repo')">GitHub Repo</div>
+                    <div class="tab active" onclick="switchTab('input')">📝 Paste a Snippet</div>
+                    <div class="tab" onclick="switchTab('upload')">📁 Upload a Codey File</div>
+                    <div class="tab" onclick="switchTab('repo')">🐙 Link a GitHub Home</div>
                 </div>
-                
+
                 <div class="tab-content active" id="input-tab">
                     <div class="input-container">
-                        <textarea id="sourceCode" placeholder="Paste your source code here to check its vibes..."></textarea>
+                        <textarea id="sourceCode" placeholder="Drop your lovely code here to read its aura glow... 💖"></textarea>
                     </div>
-                    
+
                     <button class="btn btn-primary" onclick="analyzeCode()">
-                        <i class="fas fa-heartbeat"></i> Check Vibe
+                        <i class="fas fa-heartbeat"></i> ✨ Scan My Aura!
                     </button>
-                    
+
                     <button class="btn btn-secondary" onclick="clearCode()">
-                        <i class="fas fa-trash-alt"></i> Clear
+                        <i class="fas fa-trash-alt"></i> 🧹 Poof! Clear it
                     </button>
                 </div>
-                
+
                 <div class="tab-content" id="upload-tab">
                     <input type="file" id="codeFile" class="file-input" accept=".js,.py,.java,.php,.html,.css,.cpp,.c,.cs,.go,.rb,.swift,.rs,.ts,.json,.xml,.md,.txt">
                     <label for="codeFile" class="file-label">
                         <i class="fas fa-cloud-upload-alt"></i> Upload Code Files
                     </label>
-                    
+
                     <p id="fileName" style="margin-bottom: 1.5rem; display: none; font-weight: 500; color: var(--secondary);"></p>
-                    
+
                     <button class="btn btn-primary" onclick="analyzeFile()">
-                        <i class="fas fa-heartbeat"></i> Check File Vibe
+                        <i class="fas fa-heartbeat"></i> 🌈 Scan This File’s Aura
                     </button>
                 </div>
-                
+
                 <div class="tab-content" id="repo-tab">
                     <div class="input-container">
                         <input type="text" id="repoUrl" class="input-field" placeholder="https://github.com/user/repo" style="width: 100%; padding: 1rem; border-radius: 12px; border: 2px solid rgba(156, 39, 176, 0.2); margin-bottom: 1.5rem; font-size: 1rem;">
-                        
+
                         <div class="tooltip" style="margin-bottom: 1.5rem;">
                             <i class="fas fa-info-circle" style="color: var(--accent);"></i>
-                            <span class="tooltiptext">Currently supports public GitHub repositories only. Private repo vibes coming soon!</span>
+                            <span class="tooltiptext">Currently supports public GitHub repositories only. Private repo aura coming soon!</span>
                         </div>
-                        
+
                         <div class="repo-info" id="repoInfo">
                             <h4 id="repoName"></h4>
                             <p id="repoDescription"></p>
@@ -74,45 +74,43 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <button class="btn btn-primary" onclick="fetchGitHubRepo()">
-                        <i class="fab fa-github"></i> Check Repo Vibe
+                        <i class="fab fa-github"></i> 🧭 Explore Repo Aura
                     </button>
                 </div>
-                
+
                 <div class="progress-bar" style="display: none;" id="progressBar">
                     <div class="progress" id="progress"></div>
                 </div>
-                
+
                 <p class="status" id="statusText" style="display: none;">
                     <i class="fas fa-heartbeat pulse"></i>
-                    <span>Analyzing your code vibes...</span>
+                    <span>🔮 Reading your code's energy... hold tight!</span>
                 </p>
             </div>
-            
+
             <div class="result-section">
-                <h2><i class="fas fa-chart-line"></i> Vibe Report</h2>
-                
+                <h2><i class="fas fa-chart-line"></i> ✍️ Aura Story</h2>
+
                 <div class="suggestions" id="suggestions" style="display: none;">
-                    <h3><i class="fas fa-lightbulb"></i> Vibe Boosts (Suggestions)</h3>
+                    <h3><i class="fas fa-lightbulb"></i> 💡 Glow-Up Tips for Your Code</h3>
                     <div id="suggestionsList"></div>
                 </div>
-                
+
                 <div id="results">
                     <div class="no-results">
                         <i class="fas fa-ghost"></i>
-                        <p>No code vibes detected yet. Paste, upload, or link your code to get started.</p>
+                        <p>👻 Oops! No aura yet. Pop in some code magic to begin.</p>
                     </div>
                 </div>
-                
+
                 <div class="history-panel" id="historyPanel" style="display: none;">
-                    <h3><i class="fas fa-history"></i> Previous Analyses</h3>
+                    <h3><i class="fas fa-history"></i> 🕰️ Past Auras Seen</h3>
                     <div id="historyList"></div>
                 </div>
             </div>
         </div>
     </div>
-    
-    
 </body>
 </html>
