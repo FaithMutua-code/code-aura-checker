@@ -1,53 +1,50 @@
-# ✨ Vibe Checker – Your Code's BFF! 💖🐾
+# 🌟 Aura Checker – Your Code’s Snuggliest BFF! 🐾💕
 
-**Vibe Checker** is the **cutest little dev buddy** you never knew you needed! 🧸🌈 It lovingly inspects your codebase, detects languages, libraries, and frameworks—and sprinkles it all with magical, pastel-powered feedback. ✨ Whether you paste a snippet, upload a file, or link a GitHub repo, Vibe Checker is ready to give your code the *happiest vibes ever*! 💕
+**Aura Checker** is the *teeniest, twinkliest dev buddy* you’ll ever meet! 🧸✨ It gently hugs your codebase, sniffing out languages, libraries, and frameworks with a sprinkle of pastel magic. 🌈 Whether you share a code snippet, upload a file, or link a GitHub repo, Aura Checker wraps your code in the *coziest, happiest auras* ever! 😽💖
 
 ---
 
-## 🌼 Why You’ll Love Vibe Checker
+## 🌷 Why You’ll Totally Adore Aura Checker
 
-- 💫 **No-Fuss Inputs** – Paste your code, upload a file, or drop in a public GitHub repo URL (private ones coming soon… 🤫).
-- 🧠 **Smart Code Sniffing** – Detects programming languages and popular libraries with adorable confidence levels (like "💖 90% sure it's React!").
-- 💟 **Vibe-o-Meter** – Gives your code a sparkly vibe score—from “🌈 Super Sparkly!” to “🌧 Needs a Little Love.”
-- 🌷 **Helpful, Happy Suggestions** – Get sweet tips to level up your code (like adding a linter, tests, or auto-formatters).
-- 🎀 **Dreamy Kawaii UI** – Bouncy animations, pastel gradients, and magical visuals make every scan feel like a hug! 🦄
-- ⚡ **Instant Gratitude** – Fast results with a twinkly progress bar to keep you smiling. 😊
-- 🌸 **Built to Grow** – Add more languages and tools as you go. Vibe Checker just keeps getting cuter! 💫
+- 🍼 **Super Easy Inputs** – Paste your code, upload a file, or share a public GitHub repo URL (private repos coming soon, shhh~ 🤭).
+- 🧠 **Clever Code Sniffles** – Spots programming languages and libraries with the cutest confidence (like “💞 90% sure it’s React, meow!”).
+- 🌸 **Aura-o-Meter** – Gives your code a sparkly aura score, from “🌟 Ultra Glittery!” to “☁️ Needs a Tiny Cuddle.”
+- 🧁 **Sweet, Snuggly Tips** – Offers gentle ideas to make your code sparkle, like adding a linter or a touch of formatting magic! ✨
+- 🎀 **Kawaii Dreamy UI** – Bouncy animations, pastel rainbows, and fluffy visuals make every scan feel like a warm hug! 🦄
+- ⚡ **Quick Sparkle Power** – Zippy results with a twinkly-winkly progress bar to keep your heart smiling! 😊
+- 🌼 **Grows with Love** – Add more languages and tools, and Aura Checker gets even *cuter*! 💫
 
 ---
 
 ## 🐣 Getting Started
 
-### 📦 Requirements
+### 📦 What You Need
 
-- A modern web browser (Chrome, Firefox, Edge—any sparkle-friendly browser will do!)
-- No installations, no stress—just open and go! 🌟
+- A sparkly web browser (Chrome, Firefox, Edge—any browser that loves cuddles! 🐰)
+- No setup, no fuss—just open and let the magic begin! 🌟
 
-### 🧁 How to Use
+### 🍬 How to Use
 
-1. **Clone or Download**:
+1. **Clone or Snuggle**:
    ```bash
-   git clone https://github.com/your-username/vibe-checker.git
-
+   git clone https://github.com/FaithMutua-code/code-aura-checker
+   ```
 
 ## 🎠 How It Works
 
-### ✨ Choose Your Code Style
+### 🌈 Pick Your Code Cuddle
 
-- 💌 **Paste Your Code** – Like sending a love letter to Vibe Checker.
-- 🧸 **Upload a File** – Share a code file (`.js`, `.py`, `.java`, etc.) for a gentle snuggle.
-- 🌐 **Link a GitHub Repo** – Drop a public link for mock analysis (real-time support coming soon!).
+- 💌 **Paste Your Code** – Like sending a tiny love note to Aura Checker! 💕
+- 🧸 **Upload a File** – Share a code file (`.js`, `.py`, `.java`, etc.) for a soft, snuggly check.
+- 🌐 **Link a GitHub Repo** – Drop a public repo link for a mock analysis (real-time cuddles coming soon! 🐥).
 
-### 💫 Check the Vibes
+### 💫 Check the Auras
 
-- Tap the **Check Vibe** button and let the magic happen! 🪄  
-- Watch the cute little progress bar as your results load.
+- Press the **Check Aura** button and watch the magic unfold! 🪄  
+- Giggle at the adorable progress bar as your results twirl in! 🌟
 
-### 🌈 See the Sparkly Results
+### 🌼 See the Glittery Results
 
-- **Vibe Score** – A happiness rating for your code’s overall cuteness and health.
-- **Detected Languages & Libraries** – With confidence levels and heart eyes. 😍
-- **Vibe Boost Tips** – Friendly, non-judgy tips to make your code shine brighter. ✨
-
-
-   
+- **Aura Score** – A super-cute rating for your code’s happiness and health! 😽
+- **Detected Languages & Libraries** – With sparkly confidence levels and heart-shaped winks. 😘
+- **Aura Boost Tips** – Kind, non-judgy nudges to make your code glow even brighter! ✨
